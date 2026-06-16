@@ -40,8 +40,8 @@ app:
 # 详细时间线图请查看 config/timeline.yaml
 # ===============================================================
 schedule:
-  enabled: true                         # 启用调度系统
-  preset: "always_on"                   # 全天候监控，有新增即推送
+  enabled: false                        # 关闭调度系统（由 GitHub Actions cron 控制推送时间）
+  preset: "always_on"
 
 
 # ===============================================================
@@ -203,15 +203,111 @@ rss:
       url: "https://www.globaltimes.cn/rss/military.xml"
       max_age_days: 1
 
+    # ─────────────────────────────────────────────────
+    # 🇨🇳 中文权威军事/国防分析
+    # ─────────────────────────────────────────────────
+
+    - id: "guancha-mil"
+      name: "观察者网军事"
+      url: "https://www.guancha.cn/military/rss.xml"
+      max_age_days: 1
+
+    - id: "china-mil"
+      name: "中华网军事"
+      url: "https://military.china.com/rss/military.xml"
+      max_age_days: 1
+
+    - id: "mod-china"
+      name: "中国国防部"
+      url: "https://www.mod.gov.cn/rss/rss.xml"
+      max_age_days: 1
+
+    - id: "globalview"
+      name: "环球视野"
+      url: "https://www.globalview.cn/rss.xml"
+      max_age_days: 1
+
+    - id: "bjnews-mil"
+      name: "新京报军事"
+      url: "https://www.bjnews.com.cn/mil/rss.xml"
+      max_age_days: 1
+
+    # ─────────────────────────────────────────────────
+    # 🇺🇸 英文权威军事媒体
+    # ─────────────────────────────────────────────────
+
+    - id: "breaking-defense"
+      name: "Breaking Defense"
+      url: "https://breakingdefense.com/feed/"
+      max_age_days: 1
+
+    - id: "the-war-zone"
+      name: "The War Zone"
+      url: "https://www.twz.com/rss"
+      max_age_days: 1
+
+    - id: "defense-one"
+      name: "Defense One"
+      url: "https://www.defenseone.com/arc/outboundfeeds/rss/"
+      max_age_days: 1
+
+    - id: "military-times"
+      name: "Military Times"
+      url: "https://www.militarytimes.com/arc/outboundfeeds/rss/"
+      max_age_days: 1
+
+    - id: "usni-news"
+      name: "USNI News"
+      url: "https://news.usni.org/feed"
+      max_age_days: 1
+
+    - id: "foreign-policy"
+      name: "Foreign Policy"
+      url: "https://foreignpolicy.com/feed/"
+      max_age_days: 1
+
+    - id: "national-interest"
+      name: "The National Interest"
+      url: "https://nationalinterest.org/feed"
+      max_age_days: 1
+
+    - id: "rand-corp"
+      name: "RAND Corporation"
+      url: "https://www.rand.org/topics/military-and-security.xml"
+      max_age_days: 1
+
+    - id: "csis"
+      name: "CSIS"
+      url: "https://www.csis.org/rss.xml"
+      max_age_days: 1
+
+    - id: "reuters-world"
+      name: "Reuters World News"
+      url: "https://www.reuters.com/arc/outboundfeeds/subject/world/rss/"
+      max_age_days: 1
+
+    - id: "scmp-asia"
+      name: "SCMP Asia"
+      url: "https://www.scmp.com/rss/3/feed"
+      max_age_days: 1
+
+    - id: "nikkei-asia"
+      name: "Nikkei Asia"
+      url: "https://www.nikkei.com/rss/aj/rss.xml"
+      max_age_days: 1
+
+    - id: "janes-defence-weekly"
+      name: "Janes Defence Weekly"
+      url: "https://www.janes.com/feeds/rss/defence-weekly"
+      max_age_days: 1
+
 
 # ===============================================================
 # 4. 报告模式
 # ===============================================================
 report:
-  mode: "current"                     # 报告模式（开启 schedule 后作为默认值，会被 timeline 时段覆盖）
-                                      # daily = 当日汇总，按时推送当天所有匹配新闻（会包含之前推过的）
-                                      # current = 当前榜单，按时推送当前在榜的匹配新闻（持续在榜的每次都出现）
-                                      # incremental = 增量监控，只推送新增内容，零重复（没有新增时不推送）
+  mode: "incremental"                 # 增量模式：只推送新增内容，零重复
+                                      # daily = 当日汇总；current = 当前榜单；incremental = 增量监控
 
   display_mode: "keyword"             # 分组维度
                                       # keyword = 按关键词分组显示
@@ -301,7 +397,27 @@ display:
   # 推送展示由 regions.standalone 控制，AI 分析由 ai_analysis.include_standalone 控制
   standalone:
     platforms: []                                # 不展示独立热榜
-    rss_feeds: ["huanqiu-mil", "people-mil", "cankaoxiaoxi", "reuters-defense", "defense-news", "janes", "the-diplomat"]
+    rss_feeds:
+      - "huanqiu-mil"
+      - "people-mil"
+      - "cankaoxiaoxi"
+      - "chinanews-mil"
+      - "xinhua-mil"
+      - "guancha-mil"
+      - "mod-china"
+      - "reuters-defense"
+      - "defense-news"
+      - "defense-one"
+      - "breaking-defense"
+      - "military-times"
+      - "the-war-zone"
+      - "usni-news"
+      - "janes"
+      - "the-diplomat"
+      - "foreign-policy"
+      - "national-interest"
+      - "rand-corp"
+      - "csis"
     max_items: 10                                # 每个 RSS 源最多展示 10 条
 
 
