@@ -50,9 +50,15 @@ def format_title_for_platform(
     )
 
     link_url = title_data["mobile_url"] or title_data["url"]
+    original_title = title_data.get("original_title")
     cleaned_title = clean_title(title_data["title"])
     if not cleaned_title:
         cleaned_title = link_url or title_data["url"] or ""
+    # 如果存在原始标题且与翻译后不同，追加显示（双语效果）
+    if original_title and original_title != title_data["title"]:
+        cleaned_original = clean_title(original_title)
+        if cleaned_original and cleaned_original != cleaned_title:
+            cleaned_title = f"{cleaned_title}（{cleaned_original}）"
 
     # 获取关键词标签（platform 模式使用）
     keyword = title_data.get("matched_keyword", "") if show_keyword else ""

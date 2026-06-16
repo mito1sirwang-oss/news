@@ -196,23 +196,42 @@ class NotificationDispatcher:
                 print(f"[翻译][DEBUG] （另有 {unchanged_count} 条未变化，已省略）")
 
         # 回填翻译结果（仅在翻译文本非空时替换，防止空翻译覆盖原始标题）
+        # 同时保存原始标题到 original_title 字段，支持中英文双语显示
         for i, (loc_type, idx1, idx2) in enumerate(title_locations):
             if i < len(result.results) and result.results[i].success:
                 translated = result.results[i].translated_text
                 if not translated or not translated.strip():
                     continue
                 if loc_type == "stats":
-                    report_data["stats"][idx1]["titles"][idx2]["title"] = translated
+                    target = report_data["stats"][idx1]["titles"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
                 elif loc_type == "new_titles":
-                    report_data["new_titles"][idx1]["titles"][idx2]["title"] = translated
+                    target = report_data["new_titles"][idx1]["titles"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
                 elif loc_type == "rss_items" and rss_items:
-                    rss_items[idx1]["titles"][idx2]["title"] = translated
+                    target = rss_items[idx1]["titles"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
                 elif loc_type == "rss_new_items" and rss_new_items:
-                    rss_new_items[idx1]["titles"][idx2]["title"] = translated
+                    target = rss_new_items[idx1]["titles"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
                 elif loc_type == "standalone_platforms" and standalone_data:
-                    standalone_data["platforms"][idx1]["items"][idx2]["title"] = translated
+                    target = standalone_data["platforms"][idx1]["items"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
                 elif loc_type == "standalone_rss" and standalone_data:
-                    standalone_data["rss_feeds"][idx1]["items"][idx2]["title"] = translated
+                    target = standalone_data["rss_feeds"][idx1]["items"][idx2]
+                    if "original_title" not in target:
+                        target["original_title"] = target["title"]
+                    target["title"] = translated
 
         return report_data, rss_items, rss_new_items, standalone_data
 

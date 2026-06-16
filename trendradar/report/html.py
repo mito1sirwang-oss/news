@@ -1686,8 +1686,11 @@ def render_html_content(
                             </div>
                             <div class="news-title">"""
 
-                # 处理标题和链接
-                escaped_title = html_escape(title_data["title"])
+                original_title = title_data.get("original_title")
+                display_title = title_data["title"]
+                if original_title and original_title != title_data["title"]:
+                    display_title = f"{title_data['title']}（{original_title}）"
+                escaped_title = html_escape(display_title)
                 link_url = title_data.get("mobile_url") or title_data.get("url", "")
 
                 if link_url:
@@ -1753,8 +1756,11 @@ def render_html_content(
                             <div class="new-item-content">
                                 <div class="new-item-title">"""
 
-                # 处理新增新闻的链接
-                escaped_title = html_escape(title_data["title"])
+                original_title = title_data.get("original_title")
+                display_title = title_data["title"]
+                if original_title and original_title != title_data["title"]:
+                    display_title = f"{title_data['title']}（{original_title}）"
+                escaped_title = html_escape(display_title)
                 link_url = title_data.get("mobile_url") or title_data.get("url", "")
 
                 if link_url:
