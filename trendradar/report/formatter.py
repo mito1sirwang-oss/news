@@ -50,15 +50,17 @@ def format_title_for_platform(
     )
 
     link_url = title_data["mobile_url"] or title_data["url"]
-    original_title = title_data.get("original_title")
+    translated_title = title_data.get("translated_title")
     cleaned_title = clean_title(title_data["title"])
     if not cleaned_title:
         cleaned_title = link_url or title_data["url"] or ""
-    # 如果存在原始标题且与翻译后不同，追加显示（双语效果）
-    if original_title and original_title != title_data["title"]:
-        cleaned_original = clean_title(original_title)
-        if cleaned_original and cleaned_original != cleaned_title:
-            cleaned_title = f"{cleaned_title}（{cleaned_original}）"
+    # 兼容旧版 original_title 替换模式
+    if not translated_title:
+        original_title = title_data.get("original_title")
+        if original_title and original_title != title_data["title"]:
+            cleaned_original = clean_title(original_title)
+            if cleaned_original and cleaned_original != cleaned_title:
+                cleaned_title = f"{cleaned_title}（{cleaned_original}）"
 
     # 获取关键词标签（platform 模式使用）
     keyword = title_data.get("matched_keyword", "") if show_keyword else ""
@@ -85,6 +87,17 @@ def format_title_for_platform(
         if title_data["count"] > 1:
             result += f" <font color='green'>({title_data['count']}次)</font>"
 
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    <font color='grey'>{html_escape(clean_title(summary_text[:100]))}</font>"
+
+        translated = title_data.get("translated_title", "")
+        if translated:
+            result += f"\n    ── <font color='green'>{html_escape(translated)}</font>"
+            ts = title_data.get("translated_summary", "")
+            if ts:
+                result += f"\n    <font color='grey'>{clean_title(ts[:100])}</font>"
+
         return result
 
     elif platform == "dingtalk":
@@ -108,6 +121,17 @@ def format_title_for_platform(
             result += f" - {title_data['time_display']}"
         if title_data["count"] > 1:
             result += f" ({title_data['count']}次)"
+
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    {clean_title(summary_text[:100])}"
+
+        translated = title_data.get("translated_title", "")
+        if translated:
+            result += f"\n    ── {translated}"
+            ts = title_data.get("translated_summary", "")
+            if ts:
+                result += f"\n    {clean_title(ts[:100])}"
 
         return result
 
@@ -134,6 +158,17 @@ def format_title_for_platform(
         if title_data["count"] > 1:
             result += f" ({title_data['count']}次)"
 
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    {clean_title(summary_text[:100])}"
+
+        translated = title_data.get("translated_title", "")
+        if translated:
+            result += f"\n    ── {translated}"
+            ts = title_data.get("translated_summary", "")
+            if ts:
+                result += f"\n    {clean_title(ts[:100])}"
+
         return result
 
     elif platform == "telegram":
@@ -158,6 +193,10 @@ def format_title_for_platform(
         if title_data["count"] > 1:
             result += f" <code>({title_data['count']}次)</code>"
 
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    {clean_title(summary_text[:100])}"
+
         return result
 
     elif platform == "ntfy":
@@ -181,6 +220,17 @@ def format_title_for_platform(
             result += f" `- {title_data['time_display']}`"
         if title_data["count"] > 1:
             result += f" `({title_data['count']}次)`"
+
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    {clean_title(summary_text[:100])}"
+
+        translated = title_data.get("translated_title", "")
+        if translated:
+            result += f"\n    ── {translated}"
+            ts = title_data.get("translated_summary", "")
+            if ts:
+                result += f"\n    {clean_title(ts[:100])}"
 
         return result
 
@@ -212,6 +262,10 @@ def format_title_for_platform(
             result += f" `- {title_data['time_display']}`"
         if title_data["count"] > 1:
             result += f" `({title_data['count']}次)`"
+
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            result += f"\n    {clean_title(summary_text[:100])}"
 
         return result
 
@@ -251,6 +305,20 @@ def format_title_for_platform(
 
         if title_data.get("is_new"):
             formatted_title = f"<div class='new-title'>🆕 {formatted_title}</div>"
+
+        summary_text = title_data.get("summary", "")
+        if summary_text:
+            escaped_summary = html_escape(clean_title(summary_text[:100]))
+            formatted_title += f'<div class="rss-summary">{escaped_summary}</div>'
+
+        translated_text = title_data.get("translated_title", "")
+        if translated_text:
+            escaped_translated = html_escape(translated_text)
+            formatted_title += f'<div class="translated-title">── {escaped_translated}</div>'
+            ts = title_data.get("translated_summary", "")
+            if ts:
+                escaped_ts = html_escape(clean_title(ts[:100]))
+                formatted_title += f'<div class="translated-summary">{escaped_ts}</div>'
 
         return formatted_title
 

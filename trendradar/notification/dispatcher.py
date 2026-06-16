@@ -109,129 +109,131 @@ class NotificationDispatcher:
         rss_new_items = copy.deepcopy(rss_new_items) if rss_new_items else None
         standalone_data = copy.deepcopy(standalone_data) if standalone_data else None
 
-        # 收集所有需要翻译的标题
+        # ── 收集所有需要翻译的标题和概述 ──
         titles_to_translate = []
-        title_locations = []  # 记录标题位置，用于回填
+        title_locations = []
+        summaries_to_translate = []
+        summary_locations = []
 
-        # 1. 热榜标题（scope 开启 且 区域展示）
-        if scope.get("HOTLIST", True) and display_regions.get("HOTLIST", True):
-            for stat_idx, stat in enumerate(report_data.get("stats", [])):
-                for title_idx, title_data in enumerate(stat.get("titles", [])):
-                    titles_to_translate.append(title_data.get("title", ""))
-                    title_locations.append(("stats", stat_idx, title_idx))
-
-            # 2. 新增热点标题
-            for source_idx, source in enumerate(report_data.get("new_titles", [])):
-                for title_idx, title_data in enumerate(source.get("titles", [])):
-                    titles_to_translate.append(title_data.get("title", ""))
-                    title_locations.append(("new_titles", source_idx, title_idx))
-
-        # 3. RSS 统计标题（结构与 stats 一致：[{word, count, titles: [{title, ...}]}]）
-        if not skip_rss and rss_items and scope.get("RSS", True) and display_regions.get("RSS", True):
-            for stat_idx, stat in enumerate(rss_items):
-                for title_idx, title_data in enumerate(stat.get("titles", [])):
-                    titles_to_translate.append(title_data.get("title", ""))
-                    title_locations.append(("rss_items", stat_idx, title_idx))
-
-        # 4. RSS 新增标题（结构与 stats 一致）
-        if not skip_rss and rss_new_items and scope.get("RSS", True) and display_regions.get("RSS", True) and display_regions.get("NEW_ITEMS", True):
-            for stat_idx, stat in enumerate(rss_new_items):
-                for title_idx, title_data in enumerate(stat.get("titles", [])):
-                    titles_to_translate.append(title_data.get("title", ""))
-                    title_locations.append(("rss_new_items", stat_idx, title_idx))
-
-        # 5. 独立展示区 - 热榜平台 + RSS 源
-        # 统一由 skip_standalone 控制；standalone RSS 是独立数据集，不应被 skip_rss 跳过
-        if not skip_standalone and standalone_data and scope.get("STANDALONE", True) and display_regions.get("STANDALONE", False):
-            for plat_idx, platform in enumerate(standalone_data.get("platforms", [])):
-                for item_idx, item in enumerate(platform.get("items", [])):
+        def _collect_region_titles(data_source, region_key, region_check=None):
+            if region_check is not None and not region_check:
+                return
+            for stat_idx, stat in enumerate(data_source):
+                for item_idx, item in enumerate(stat.get("titles", [])):
                     titles_to_translate.append(item.get("title", ""))
-                    title_locations.append(("standalone_platforms", plat_idx, item_idx))
+                    title_locations.append((region_key, stat_idx, item_idx))
+                    s = item.get("summary", "")
+                    if s:
+                        summaries_to_translate.append(s)
+                        summary_locations.append((region_key, stat_idx, item_idx))
 
-            # 6. 独立展示区 - RSS 源
-            for feed_idx, feed in enumerate(standalone_data.get("rss_feeds", [])):
-                for item_idx, item in enumerate(feed.get("items", [])):
-                    titles_to_translate.append(item.get("title", ""))
-                    title_locations.append(("standalone_rss", feed_idx, item_idx))
+        def _collect_standalone_items(items_list, region_key):
+            for item_idx, item in enumerate(items_list):
+                titles_to_translate.append(item.get("title", ""))
+                title_locations.append((region_key, -1, item_idx))
+                s = item.get("summary", "")
+                if s:
+                    summaries_to_translate.append(s)
+                    summary_locations.append((region_key, -1, item_idx))
+
+        # 1. 热榜
+        hotlist_enabled = scope.get("HOTLIST", True) and display_regions.get("HOTLIST", True)
+        if hotlist_enabled:
+            _collect_region_titles(report_data.get("stats", []), "stats")
+            _collect_region_titles(report_data.get("new_titles", []), "new_titles")
+
+        # 2. RSS 统计
+        rss_enabled = not skip_rss and rss_items and scope.get("RSS", True) and display_regions.get("RSS", True)
+        if rss_enabled:
+            _collect_region_titles(rss_items, "rss_items")
+            if display_regions.get("NEW_ITEMS", True):
+                _collect_region_titles(rss_new_items or [], "rss_new_items")
+
+        # 3. 独立展示区
+        standalone_enabled = not skip_standalone and standalone_data and scope.get("STANDALONE", True) and display_regions.get("STANDALONE", False)
+        if standalone_enabled:
+            for plat in standalone_data.get("platforms", []):
+                _collect_standalone_items(plat.get("items", []), "standalone_platforms")
+            for feed in standalone_data.get("rss_feeds", []):
+                _collect_standalone_items(feed.get("items", []), "standalone_rss")
 
         if not titles_to_translate:
             print("[翻译] 没有需要翻译的内容")
             return report_data, rss_items, rss_new_items, standalone_data
 
-        print(f"[翻译] 共 {len(titles_to_translate)} 条标题待翻译")
+        print(f"[翻译] 共 {len(titles_to_translate)} 条标题、{len(summaries_to_translate)} 条概述待翻译")
 
-        # 批量翻译
+        # ── 批量翻译标题 ──
         result = self.translator.translate_batch(titles_to_translate)
 
-        if result.success_count == 0:
-            print(f"[翻译] 翻译失败: {result.results[0].error if result.results else '未知错误'}")
-            return report_data, rss_items, rss_new_items, standalone_data
+        if result.success_count > 0:
+            print(f"[翻译] 标题翻译完成: {result.success_count}/{result.total_count} 成功")
 
-        print(f"[翻译] 翻译完成: {result.success_count}/{result.total_count} 成功")
+            # 回填标题翻译：保留原标题，保存翻译到 translated_title
+            for i, (loc_type, idx1, idx2) in enumerate(title_locations):
+                if i < len(result.results) and result.results[i].success:
+                    translated = result.results[i].translated_text
+                    if not translated or not translated.strip():
+                        continue
+                    if loc_type == "stats":
+                        target = report_data["stats"][idx1]["titles"][idx2]
+                    elif loc_type == "new_titles":
+                        target = report_data["new_titles"][idx1]["titles"][idx2]
+                    elif loc_type == "rss_items" and rss_items:
+                        target = rss_items[idx1]["titles"][idx2]
+                    elif loc_type == "rss_new_items" and rss_new_items:
+                        target = rss_new_items[idx1]["titles"][idx2]
+                    elif loc_type == "standalone_platforms" and standalone_data:
+                        if 0 <= idx1 < len(standalone_data["platforms"]):
+                            target = standalone_data["platforms"][idx1]["items"][idx2]
+                        else:
+                            continue
+                    elif loc_type == "standalone_rss" and standalone_data:
+                        if 0 <= idx1 < len(standalone_data["rss_feeds"]):
+                            target = standalone_data["rss_feeds"][idx1]["items"][idx2]
+                        else:
+                            continue
+                    else:
+                        continue
+                    target["translated_title"] = translated
+        else:
+            print(f"[翻译] 标题翻译失败: {result.results[0].error if result.results else '未知错误'}")
 
-        # debug 模式：输出完整 prompt、AI 原始响应、逐条对照
-        if self.config.get("DEBUG", False):
-            if result.prompt:
-                print(f"[翻译][DEBUG] === 发送给 AI 的 Prompt ===")
-                print(result.prompt)
-                print(f"[翻译][DEBUG] === Prompt 结束 ===")
-            if result.raw_response:
-                print(f"[翻译][DEBUG] === AI 原始响应 ===")
-                print(result.raw_response)
-                print(f"[翻译][DEBUG] === 响应结束 ===")
-            # 行数不匹配警告
-            expected = len(titles_to_translate)
-            if result.parsed_count != expected:
-                print(f"[翻译][DEBUG] ⚠️ 行数不匹配：期望 {expected} 条，AI 返回 {result.parsed_count} 条")
-            # 逐条对照
-            unchanged_count = 0
-            for i, res in enumerate(result.results):
-                if not res.success and res.error:
-                    print(f"[翻译][DEBUG] [{i+1}] !! 失败: {res.error}")
-                elif res.original_text == res.translated_text:
-                    unchanged_count += 1
-                else:
-                    print(f"[翻译][DEBUG] [{i+1}] {res.original_text} => {res.translated_text}")
-            if unchanged_count > 0:
-                print(f"[翻译][DEBUG] （另有 {unchanged_count} 条未变化，已省略）")
-
-        # 回填翻译结果（仅在翻译文本非空时替换，防止空翻译覆盖原始标题）
-        # 同时保存原始标题到 original_title 字段，支持中英文双语显示
-        for i, (loc_type, idx1, idx2) in enumerate(title_locations):
-            if i < len(result.results) and result.results[i].success:
-                translated = result.results[i].translated_text
-                if not translated or not translated.strip():
-                    continue
-                if loc_type == "stats":
-                    target = report_data["stats"][idx1]["titles"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
-                elif loc_type == "new_titles":
-                    target = report_data["new_titles"][idx1]["titles"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
-                elif loc_type == "rss_items" and rss_items:
-                    target = rss_items[idx1]["titles"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
-                elif loc_type == "rss_new_items" and rss_new_items:
-                    target = rss_new_items[idx1]["titles"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
-                elif loc_type == "standalone_platforms" and standalone_data:
-                    target = standalone_data["platforms"][idx1]["items"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
-                elif loc_type == "standalone_rss" and standalone_data:
-                    target = standalone_data["rss_feeds"][idx1]["items"][idx2]
-                    if "original_title" not in target:
-                        target["original_title"] = target["title"]
-                    target["title"] = translated
+        # ── 批量翻译概述 ──
+        if summaries_to_translate:
+            summary_result = self.translator.translate_batch(summaries_to_translate)
+            if summary_result.success_count > 0:
+                print(f"[翻译] 概述翻译完成: {summary_result.success_count}/{summary_result.total_count} 成功")
+                for i, (loc_type, idx1, idx2) in enumerate(summary_locations):
+                    if i < len(summary_result.results) and summary_result.results[i].success:
+                        translated = summary_result.results[i].translated_text
+                        if not translated or not translated.strip():
+                            continue
+                        if loc_type == "stats":
+                            target = report_data["stats"][idx1]["titles"][idx2]
+                        elif loc_type == "new_titles":
+                            target = report_data["new_titles"][idx1]["titles"][idx2]
+                        elif loc_type == "rss_items" and rss_items:
+                            target = rss_items[idx1]["titles"][idx2]
+                        elif loc_type == "rss_new_items" and rss_new_items:
+                            target = rss_new_items[idx1]["titles"][idx2]
+                        elif loc_type == "standalone_platforms" and standalone_data:
+                            if 0 <= idx1 < len(standalone_data["platforms"]):
+                                target = standalone_data["platforms"][idx1]["items"][idx2]
+                            else:
+                                continue
+                        elif loc_type == "standalone_rss" and standalone_data:
+                            if 0 <= idx1 < len(standalone_data["rss_feeds"]):
+                                target = standalone_data["rss_feeds"][idx1]["items"][idx2]
+                            else:
+                                continue
+                        else:
+                            continue
+                        target["translated_summary"] = translated
+            else:
+                print(f"[翻译] 概述翻译失败: {summary_result.results[0].error if summary_result.results else '未知错误'}")
+        else:
+            print("[翻译] 没有概述需要翻译")
 
         return report_data, rss_items, rss_new_items, standalone_data
 

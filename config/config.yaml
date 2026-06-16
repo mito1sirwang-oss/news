@@ -301,6 +301,104 @@ rss:
       url: "https://www.janes.com/feeds/rss/defence-weekly"
       max_age_days: 1
 
+    # ─────────────────────────────────────────────────
+    # 🇨🇳 新增中文军事/国防来源
+    # ─────────────────────────────────────────────────
+
+    - id: "ifeng-mil"
+      name: "凤凰网军事"
+      url: "https://news.ifeng.com/rss/mil.xml"
+      max_age_days: 1
+
+    - id: "cctv-mil"
+      name: "央视网军事"
+      url: "https://news.cctv.com/rss/military.xml"
+      max_age_days: 1
+
+    - id: "sina-mil"
+      name: "新浪军事"
+      url: "https://feed.mix.sina.com.cn/rss/mil.xml"
+      max_age_days: 1
+
+    - id: "pla-daily"
+      name: "解放军报"
+      url: "http://www.81.cn/rss/rss.xml"
+      max_age_days: 1
+
+    - id: "haixiareview"
+      name: "海峡导报"
+      url: "https://www.haixiareview.com/rss.xml"
+      max_age_days: 1
+
+    # ─────────────────────────────────────────────────
+    # 🌏 新增英文国际军事/防务来源
+    # ─────────────────────────────────────────────────
+
+    - id: "defense-gov"
+      name: "U.S. Dept of Defense"
+      url: "https://www.defense.gov/DesktopModules/ArticleCS/Rss.ashx?ContentType=1&Site=101&Category=16310"
+      max_age_days: 1
+
+    - id: "army-mil"
+      name: "U.S. Army"
+      url: "https://www.army.mil/rss/rss.xml"
+      max_age_days: 1
+
+    - id: "navy-mil"
+      name: "U.S. Navy"
+      url: "https://www.navy.mil/DesktopModules/ArticleCS/Rss.ashx?ContentType=1&Site=1&Category=16022"
+      max_age_days: 1
+
+    - id: "airforce-mil"
+      name: "U.S. Air Force"
+      url: "https://www.af.mil/DesktopModules/ArticleCS/Rss.ashx?ContentType=1&Site=1&Category=16160"
+      max_age_days: 1
+
+    - id: "naval-news"
+      name: "Naval News"
+      url: "https://www.navalnews.com/feed/"
+      max_age_days: 1
+
+    - id: "warontherocks"
+      name: "War on the Rocks"
+      url: "https://warontherocks.com/feed/"
+      max_age_days: 1
+
+    - id: "eurasiantimes"
+      name: "Eurasia Times"
+      url: "https://www.eurasiantimes.com/feed/"
+      max_age_days: 1
+
+    - id: "asia-times"
+      name: "Asia Times"
+      url: "https://asiatimes.com/feed/"
+      max_age_days: 1
+
+    - id: "japan-times"
+      name: "The Japan Times"
+      url: "https://www.japantimes.co.jp/feed/"
+      max_age_days: 1
+
+    - id: "taipei-times"
+      name: "Taipei Times"
+      url: "https://www.taipeitimes.com/News/rss.xml"
+      max_age_days: 1
+
+    - id: "aerospace-daily"
+      name: "Aerospace DAILY"
+      url: "https://www.aviationweek.com/feed/defense"
+      max_age_days: 1
+
+    - id: "fdd"
+      name: "FDD (Foundation for Defense of Democracies)"
+      url: "https://www.fdd.org/feed/"
+      max_age_days: 1
+
+    - id: "hudson"
+      name: "Hudson Institute"
+      url: "https://www.hudson.org/rss.xml"
+      max_age_days: 1
+
 
 # ===============================================================
 # 4. 报告模式
@@ -405,6 +503,11 @@ display:
       - "xinhua-mil"
       - "guancha-mil"
       - "mod-china"
+      - "ifeng-mil"
+      - "cctv-mil"
+      - "sina-mil"
+      - "pla-daily"
+      - "haixiareview"
       - "reuters-defense"
       - "defense-news"
       - "defense-one"
@@ -418,6 +521,18 @@ display:
       - "national-interest"
       - "rand-corp"
       - "csis"
+      - "defense-gov"
+      - "army-mil"
+      - "navy-mil"
+      - "airforce-mil"
+      - "naval-news"
+      - "warontherocks"
+      - "eurasiantimes"
+      - "asia-times"
+      - "japan-times"
+      - "taipei-times"
+      - "fdd"
+      - "hudson"
     max_items: 10                                # 每个 RSS 源最多展示 10 条
 
 
@@ -582,7 +697,7 @@ ai:
 # 9. AI 分析功能（模型配置见上方 ai 段）
 # ===============================================================
 ai_analysis:
-  enabled: true                     # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
+  enabled: false                    # 是否启用 AI 分析（true=启用, false=关闭）—— 总开关
                                     # 开启 schedule 后此项仍为总开关：false=永远不分析，true=由调度控制
 
   language: "Chinese"               # 分析报告语言（如 "English", "Korean", "法语"）

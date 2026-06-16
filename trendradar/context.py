@@ -1074,6 +1074,7 @@ class AppContext:
                     "is_new": is_new,
                     "time_display": time_display,
                     "matched_keyword": tag_name,
+                    "summary": item.get("summary", ""),
                 }
 
                 if source_type == "rss":

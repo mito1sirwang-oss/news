@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Callable
 
 from trendradar.report.formatter import format_title_for_platform
-from trendradar.report.helpers import format_rank_display
+from trendradar.report.helpers import format_rank_display, clean_title
 from trendradar.utils.time import DEFAULT_TIMEZONE, format_iso_time_friendly, convert_time_for_display
 from trendradar.notification.batch import truncate_at_line_boundary
 
@@ -1822,6 +1822,7 @@ def _format_standalone_rss_item(
     url = item.get("url", "")
     published_at = item.get("published_at", "")
     author = item.get("author", "")
+    summary = item.get("summary", "")
 
     # 使用友好时间格式
     friendly_time = ""
@@ -1837,6 +1838,9 @@ def _format_standalone_rss_item(
     meta_str = ", ".join(meta_parts)
 
     # 根据格式类型构建条目行
+    translated_title = item.get("translated_title", "")
+    translated_summary = item.get("translated_summary", "")
+
     if format_type == "feishu":
         if url:
             item_line = f"  {index}. [{title}]({url})"
@@ -1844,6 +1848,12 @@ def _format_standalone_rss_item(
             item_line = f"  {index}. {title}"
         if meta_str:
             item_line += f" <font color='grey'>- {meta_str}</font>"
+        if summary:
+            item_line += f"\n    <font color='grey'>{clean_title(summary[:100])}</font>"
+        if translated_title:
+            item_line += f"\n    ── <font color='green'>{translated_title}</font>"
+            if translated_summary:
+                item_line += f"\n    <font color='grey'>{clean_title(translated_summary[:100])}</font>"
     elif format_type == "telegram":
         if url:
             item_line = f"  {index}. {title} ({url})"
@@ -1851,6 +1861,12 @@ def _format_standalone_rss_item(
             item_line = f"  {index}. {title}"
         if meta_str:
             item_line += f" - {meta_str}"
+        if summary:
+            item_line += f"\n    {clean_title(summary[:100])}"
+        if translated_title:
+            item_line += f"\n    ── {translated_title}"
+            if translated_summary:
+                item_line += f"\n    {clean_title(translated_summary[:100])}"
     elif format_type == "slack":
         if url:
             item_line = f"  {index}. <{url}|{title}>"
@@ -1858,6 +1874,12 @@ def _format_standalone_rss_item(
             item_line = f"  {index}. {title}"
         if meta_str:
             item_line += f" _{meta_str}_"
+        if summary:
+            item_line += f"\n    {clean_title(summary[:100])}"
+        if translated_title:
+            item_line += f"\n    ── {translated_title}"
+            if translated_summary:
+                item_line += f"\n    {clean_title(translated_summary[:100])}"
     else:
         # wework, bark, ntfy, dingtalk
         if url:
@@ -1866,6 +1888,12 @@ def _format_standalone_rss_item(
             item_line = f"  {index}. {title}"
         if meta_str:
             item_line += f" `{meta_str}`"
+        if summary:
+            item_line += f"\n    {clean_title(summary[:100])}"
+        if translated_title:
+            item_line += f"\n    ── {translated_title}"
+            if translated_summary:
+                item_line += f"\n    {clean_title(translated_summary[:100])}"
 
     item_line += "\n"
     return item_line
