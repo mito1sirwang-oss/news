@@ -125,22 +125,27 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    - id: "hacker-news"
-      name: "Hacker News"
-      url: "https://hnrss.org/frontpage"
+    # ─────────────────────────────────────────────────
+    # 🇨🇳 中国官方军媒（来源：全球军事网站汇总.xlsx）
+    # ─────────────────────────────────────────────────
 
-    - id: "ruanyifeng"
-      name: "阮一峰的网络日志"
-      url: "http://www.ruanyifeng.com/blog/atom.xml"
-      enabled: false                  # 禁用
-      # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
-     
-    - id: "yahoo-finance"
-      name: "雅虎财经"
-      url: "https://finance.yahoo.com/news/rssindex"
+    - id: "zgjw-81cn"
+      name: "中国军网（81网）"
+      url: "https://www.81.cn/rss/rss.xml"
+      max_age_days: 1
+
+    - id: "mod-china"
+      name: "中华人民共和国国防部"
+      url: "https://www.mod.gov.cn/rss/rss.xml"
+      max_age_days: 1
+
+    - id: "pladaily"
+      name: "解放军报"
+      url: "https://www.81.cn/rss/rss.xml"
+      max_age_days: 1
 
     # ─────────────────────────────────────────────────
-    # 🌏 全球军事新闻订阅
+    # 🇨🇳 中国军事媒体
     # ─────────────────────────────────────────────────
 
     - id: "huanqiu-mil"
@@ -148,34 +153,28 @@ rss:
       url: "https://mil.huanqiu.com/rss.xml"
       max_age_days: 1
 
-    - id: "people-mil"
-      name: "人民网军事"
-      url: "http://military.people.com.cn/rss/politics.xml"
+    - id: "guancha-mil"
+      name: "观察者网军事"
+      url: "https://www.guancha.cn/military/rss.xml"
       max_age_days: 1
 
-    - id: "cankaoxiaoxi"
-      name: "参考消息"
-      url: "https://www.cankaoxiaoxi.com/feed/rss.xml"
+    - id: "ifeng-mil"
+      name: "凤凰网军事"
+      url: "https://news.ifeng.com/rss/mil.xml"
       max_age_days: 1
 
-    - id: "chinanews-mil"
-      name: "中国新闻网军事"
-      url: "https://www.chinanews.com.cn/military/rss.xml"
+    - id: "sina-mil"
+      name: "新浪军事"
+      url: "https://feed.mix.sina.com.cn/rss/mil.xml"
       max_age_days: 1
 
-    - id: "xinhua-mil"
-      name: "新华网军事"
-      url: "http://www.news.cn/rss/mil.xml"
-      max_age_days: 1
+    # ─────────────────────────────────────────────────
+    # 🌏 国际防务情报与媒体
+    # ─────────────────────────────────────────────────
 
-    - id: "china-daily-mil"
-      name: "China Daily Military"
-      url: "https://www.chinadaily.com.cn/rss/world-military.xml"
-      max_age_days: 1
-
-    - id: "reuters-defense"
-      name: "Reuters Defense"
-      url: "https://www.reuters.com/arc/outboundfeeds/subject/military-defense/rss/"
+    - id: "janes"
+      name: "Janes（国际防务情报）"
+      url: "https://www.janes.com/feeds/rss"
       max_age_days: 1
 
     - id: "defense-news"
@@ -183,67 +182,9 @@ rss:
       url: "https://www.defensenews.com/arc/outboundfeeds/rss/"
       max_age_days: 1
 
-    - id: "janes"
-      name: "Janes Defence"
-      url: "https://www.janes.com/feeds/rss"
-      max_age_days: 1
-
-    - id: "the-diplomat"
-      name: "The Diplomat"
-      url: "https://thediplomat.com/feed/"
-      max_age_days: 1
-
-    - id: "south-china-morning-post"
-      name: "SCMP Military"
-      url: "https://www.scmp.com/rss/4/feed"
-      max_age_days: 1
-
-    - id: "globaltimes-mil"
-      name: "Global Times Military"
-      url: "https://www.globaltimes.cn/rss/military.xml"
-      max_age_days: 1
-
-    # ─────────────────────────────────────────────────
-    # 🇨🇳 中文权威军事/国防分析
-    # ─────────────────────────────────────────────────
-
-    - id: "guancha-mil"
-      name: "观察者网军事"
-      url: "https://www.guancha.cn/military/rss.xml"
-      max_age_days: 1
-
-    - id: "china-mil"
-      name: "中华网军事"
-      url: "https://military.china.com/rss/military.xml"
-      max_age_days: 1
-
-    - id: "mod-china"
-      name: "中国国防部"
-      url: "https://www.mod.gov.cn/rss/rss.xml"
-      max_age_days: 1
-
-    - id: "globalview"
-      name: "环球视野"
-      url: "https://www.globalview.cn/rss.xml"
-      max_age_days: 1
-
-    - id: "bjnews-mil"
-      name: "新京报军事"
-      url: "https://www.bjnews.com.cn/mil/rss.xml"
-      max_age_days: 1
-
-    # ─────────────────────────────────────────────────
-    # 🇺🇸 英文权威军事媒体
-    # ─────────────────────────────────────────────────
-
     - id: "breaking-defense"
       name: "Breaking Defense"
       url: "https://breakingdefense.com/feed/"
-      max_age_days: 1
-
-    - id: "the-war-zone"
-      name: "The War Zone"
-      url: "https://www.twz.com/rss"
       max_age_days: 1
 
     - id: "defense-one"
@@ -251,24 +192,47 @@ rss:
       url: "https://www.defenseone.com/arc/outboundfeeds/rss/"
       max_age_days: 1
 
-    - id: "military-times"
-      name: "Military Times"
-      url: "https://www.militarytimes.com/arc/outboundfeeds/rss/"
+    - id: "defensescoop"
+      name: "DefenseScoop"
+      url: "https://defensescoop.com/feed/"
       max_age_days: 1
 
+    - id: "the-war-zone"
+      name: "The War Zone（TWZ）"
+      url: "https://www.twz.com/rss"
+      max_age_days: 1
+
+    # ─────────────────────────────────────────────────
+    # ⚓ 海军 / ✈️ 空军 / 🚁 陆军专业媒体
+    # ─────────────────────────────────────────────────
+
     - id: "usni-news"
-      name: "USNI News"
+      name: "USNI News（海军）"
       url: "https://news.usni.org/feed"
       max_age_days: 1
 
-    - id: "foreign-policy"
-      name: "Foreign Policy"
-      url: "https://foreignpolicy.com/feed/"
+    - id: "naval-news"
+      name: "Naval News"
+      url: "https://www.navalnews.com/feed/"
       max_age_days: 1
 
-    - id: "national-interest"
-      name: "The National Interest"
-      url: "https://nationalinterest.org/feed"
+    - id: "airspace-forces"
+      name: "Air & Space Forces Magazine"
+      url: "https://www.airandspaceforces.com/feed/"
+      max_age_days: 1
+
+    - id: "army-recognition"
+      name: "Army Recognition"
+      url: "https://www.armyrecognition.com/index.php?format=feed&type=rss"
+      max_age_days: 1
+
+    # ─────────────────────────────────────────────────
+    # 🏛️ 战争与战略研究机构
+    # ─────────────────────────────────────────────────
+
+    - id: "rusi"
+      name: "Royal United Services Institute（RUSI）"
+      url: "https://www.rusi.org/rss"
       max_age_days: 1
 
     - id: "rand-corp"
@@ -277,61 +241,12 @@ rss:
       max_age_days: 1
 
     - id: "csis"
-      name: "CSIS"
+      name: "Center for Strategic & International Studies（CSIS）"
       url: "https://www.csis.org/rss.xml"
       max_age_days: 1
 
-    - id: "reuters-world"
-      name: "Reuters World News"
-      url: "https://www.reuters.com/arc/outboundfeeds/subject/world/rss/"
-      max_age_days: 1
-
-    - id: "scmp-asia"
-      name: "SCMP Asia"
-      url: "https://www.scmp.com/rss/3/feed"
-      max_age_days: 1
-
-    - id: "nikkei-asia"
-      name: "Nikkei Asia"
-      url: "https://www.nikkei.com/rss/aj/rss.xml"
-      max_age_days: 1
-
-    - id: "janes-defence-weekly"
-      name: "Janes Defence Weekly"
-      url: "https://www.janes.com/feeds/rss/defence-weekly"
-      max_age_days: 1
-
     # ─────────────────────────────────────────────────
-    # 🇨🇳 新增中文军事/国防来源
-    # ─────────────────────────────────────────────────
-
-    - id: "ifeng-mil"
-      name: "凤凰网军事"
-      url: "https://news.ifeng.com/rss/mil.xml"
-      max_age_days: 1
-
-    - id: "cctv-mil"
-      name: "央视网军事"
-      url: "https://news.cctv.com/rss/military.xml"
-      max_age_days: 1
-
-    - id: "sina-mil"
-      name: "新浪军事"
-      url: "https://feed.mix.sina.com.cn/rss/mil.xml"
-      max_age_days: 1
-
-    - id: "pla-daily"
-      name: "解放军报"
-      url: "http://www.81.cn/rss/rss.xml"
-      max_age_days: 1
-
-    - id: "haixiareview"
-      name: "海峡导报"
-      url: "https://www.haixiareview.com/rss.xml"
-      max_age_days: 1
-
-    # ─────────────────────────────────────────────────
-    # 🌏 新增英文国际军事/防务来源
+    # 🇺🇸 美国军方
     # ─────────────────────────────────────────────────
 
     - id: "defense-gov"
@@ -354,49 +269,23 @@ rss:
       url: "https://www.af.mil/DesktopModules/ArticleCS/Rss.ashx?ContentType=1&Site=1&Category=16160"
       max_age_days: 1
 
-    - id: "naval-news"
-      name: "Naval News"
-      url: "https://www.navalnews.com/feed/"
+    - id: "marines-mil"
+      name: "U.S. Marine Corps"
+      url: "https://www.marines.mil/DesktopModules/ArticleCS/Rss.ashx?ContentType=1&Site=1&Category=16310"
       max_age_days: 1
 
-    - id: "warontherocks"
-      name: "War on the Rocks"
-      url: "https://warontherocks.com/feed/"
+    # ─────────────────────────────────────────────────
+    # 🌐 国际组织
+    # ─────────────────────────────────────────────────
+
+    - id: "nato"
+      name: "NATO"
+      url: "https://www.nato.int/cps/en/natohq/rss.xml"
       max_age_days: 1
 
-    - id: "eurasiantimes"
-      name: "Eurasia Times"
-      url: "https://www.eurasiantimes.com/feed/"
-      max_age_days: 1
-
-    - id: "asia-times"
-      name: "Asia Times"
-      url: "https://asiatimes.com/feed/"
-      max_age_days: 1
-
-    - id: "japan-times"
-      name: "The Japan Times"
-      url: "https://www.japantimes.co.jp/feed/"
-      max_age_days: 1
-
-    - id: "taipei-times"
-      name: "Taipei Times"
-      url: "https://www.taipeitimes.com/News/rss.xml"
-      max_age_days: 1
-
-    - id: "aerospace-daily"
-      name: "Aerospace DAILY"
-      url: "https://www.aviationweek.com/feed/defense"
-      max_age_days: 1
-
-    - id: "fdd"
-      name: "FDD (Foundation for Defense of Democracies)"
-      url: "https://www.fdd.org/feed/"
-      max_age_days: 1
-
-    - id: "hudson"
-      name: "Hudson Institute"
-      url: "https://www.hudson.org/rss.xml"
+    - id: "uk-mod"
+      name: "UK Ministry of Defence"
+      url: "https://www.gov.uk/government/organisations/ministry-of-defence.atom"
       max_age_days: 1
 
 
@@ -496,43 +385,40 @@ display:
   standalone:
     platforms: []                                # 不展示独立热榜
     rss_feeds:
-      - "huanqiu-mil"
-      - "people-mil"
-      - "cankaoxiaoxi"
-      - "chinanews-mil"
-      - "xinhua-mil"
-      - "guancha-mil"
+      # 中国官方军媒
+      - "zgjw-81cn"
       - "mod-china"
+      - "pladaily"
+      # 中国军事媒体
+      - "huanqiu-mil"
+      - "guancha-mil"
       - "ifeng-mil"
-      - "cctv-mil"
       - "sina-mil"
-      - "pla-daily"
-      - "haixiareview"
-      - "reuters-defense"
-      - "defense-news"
-      - "defense-one"
-      - "breaking-defense"
-      - "military-times"
-      - "the-war-zone"
-      - "usni-news"
+      # 国际防务情报与媒体
       - "janes"
-      - "the-diplomat"
-      - "foreign-policy"
-      - "national-interest"
+      - "defense-news"
+      - "breaking-defense"
+      - "defense-one"
+      - "defensescoop"
+      - "the-war-zone"
+      # 海军/空军/陆军专业媒体
+      - "usni-news"
+      - "naval-news"
+      - "airspace-forces"
+      - "army-recognition"
+      # 战争与战略研究机构
+      - "rusi"
       - "rand-corp"
       - "csis"
+      # 美国军方
       - "defense-gov"
       - "army-mil"
       - "navy-mil"
       - "airforce-mil"
-      - "naval-news"
-      - "warontherocks"
-      - "eurasiantimes"
-      - "asia-times"
-      - "japan-times"
-      - "taipei-times"
-      - "fdd"
-      - "hudson"
+      - "marines-mil"
+      # 国际组织
+      - "nato"
+      - "uk-mod"
     max_items: 10                                # 每个 RSS 源最多展示 10 条
 
 
